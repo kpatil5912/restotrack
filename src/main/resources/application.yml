@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: recipe-stock-tracker
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:restotrack}
+    username: ${DB_USER:restotrack}
+    password: ${DB_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    defer-datasource-initialization: true
+    properties:
+      hibernate:
+        format_sql: true
+    open-in-view: false
+  sql:
+    init:
+      mode: always
+
+server:
+  port: 9091
+
+logging:
+  level:
+    com.restotrack: INFO

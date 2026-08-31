@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="640" viewBox="0 0 900 640" font-family="Segoe UI, Arial, sans-serif">
+  <defs>
+    <marker id="one" markerWidth="14" markerHeight="14" refX="10" refY="7" orient="auto">
+      <path d="M2,2 L2,12" stroke="#334155" stroke-width="1.6"/>
+      <path d="M6,2 L6,12" stroke="#334155" stroke-width="1.6"/>
+    </marker>
+    <marker id="many" markerWidth="16" markerHeight="16" refX="2" refY="7" orient="auto">
+      <path d="M14,2 L2,7 L14,12" stroke="#334155" stroke-width="1.6" fill="none"/>
+    </marker>
+    <style>
+      .title { font-size: 22px; font-weight: 700; fill: #0f172a; }
+      .etitle{ font-size: 15px; font-weight: 700; fill: #ffffff; }
+      .fld   { font-size: 12.5px; fill: #1e293b; }
+      .pk    { font-size: 12.5px; fill: #1e293b; font-weight: 700; }
+      .note  { font-size: 12px; fill: #64748b; }
+      .rel   { stroke: #334155; stroke-width: 1.6; fill: none; }
+      .rlab  { font-size: 11.5px; fill: #475569; }
+    </style>
+  </defs>
+  <rect width="900" height="640" fill="#f8fafc"/>
+  <text x="30" y="42" class="title">RestoTrack — Entity / ER Model</text>
+
+  <!-- Ingredient -->
+  <g>
+    <rect x="40" y="80" width="240" height="184" rx="8" fill="#ffffff" stroke="#0284c7"/>
+    <rect x="40" y="80" width="240" height="30" rx="8" fill="#0284c7"/>
+    <text x="52" y="100" class="etitle">Ingredient</text>
+    <text x="52" y="130" class="pk">PK  id : Long</text>
+    <text x="52" y="150" class="fld">name : String (unique)</text>
+    <text x="52" y="170" class="fld">stockUnit : Unit</text>
+    <text x="52" y="190" class="fld">currentStock : BigDecimal</text>
+    <text x="52" y="210" class="fld">costPerUnit : BigDecimal</text>
+    <text x="52" y="230" class="fld">lowStockThreshold : BigDecimal</text>
+    <text x="52" y="250" class="fld">version : Long (@Version)</text>
+  </g>
+
+  <!-- MenuItem -->
+  <g>
+    <rect x="620" y="80" width="240" height="110" rx="8" fill="#ffffff" stroke="#10b981"/>
+    <rect x="620" y="80" width="240" height="30" rx="8" fill="#10b981"/>
+    <text x="632" y="100" class="etitle">MenuItem</text>
+    <text x="632" y="130" class="pk">PK  id : Long</text>
+    <text x="632" y="150" class="fld">name : String (unique)</text>
+    <text x="632" y="170" class="fld">sellingPrice : BigDecimal</text>
+  </g>
+
+  <!-- RecipeItem -->
+  <g>
+    <rect x="330" y="360" width="240" height="150" rx="8" fill="#ffffff" stroke="#f59e0b"/>
+    <rect x="330" y="360" width="240" height="30" rx="8" fill="#f59e0b"/>
+    <text x="342" y="380" class="etitle">RecipeItem</text>
+    <text x="342" y="410" class="pk">PK  id : Long</text>
+    <text x="342" y="430" class="fld">FK  menu_item_id</text>
+    <text x="342" y="450" class="fld">FK  ingredient_id</text>
+    <text x="342" y="470" class="fld">quantity : BigDecimal</text>
+    <text x="342" y="490" class="fld">unit : Unit</text>
+  </g>
+
+  <!-- StockMovement -->
+  <g>
+    <rect x="40" y="360" width="240" height="170" rx="8" fill="#ffffff" stroke="#7c3aed"/>
+    <rect x="40" y="360" width="240" height="30" rx="8" fill="#7c3aed"/>
+    <text x="52" y="380" class="etitle">StockMovement  (ledger)</text>
+    <text x="52" y="410" class="pk">PK  id : Long</text>
+    <text x="52" y="430" class="fld">FK  ingredient_id</text>
+    <text x="52" y="450" class="fld">type : MovementType</text>
+    <text x="52" y="470" class="fld">quantity : BigDecimal</text>
+    <text x="52" y="490" class="fld">reason : String</text>
+    <text x="52" y="510" class="fld">createdAt : Instant</text>
+  </g>
+
+  <!-- Enums -->
+  <g>
+    <rect x="620" y="360" width="240" height="120" rx="8" fill="#f1f5f9" stroke="#94a3b8"/>
+    <rect x="620" y="360" width="240" height="30" rx="8" fill="#64748b"/>
+    <text x="632" y="380" class="etitle">enum Unit / MovementType</text>
+    <text x="632" y="408" class="fld">Unit: GRAM, KILOGRAM,</text>
+    <text x="632" y="426" class="fld">MILLILITRE, LITRE, PIECE</text>
+    <text x="632" y="446" class="note">families: WEIGHT / VOLUME / COUNT</text>
+    <text x="632" y="468" class="fld">MovementType: PURCHASE(+), CONSUME(-),</text>
+    <text x="632" y="482" class="note" >WASTE(-), ADJUST(0)</text>
+  </g>
+
+  <!-- Relationships -->
+  <!-- MenuItem 1 to N RecipeItem -->
+  <path class="rel" d="M700,190 L700,300 L450,300 L450,360" marker-start="url(#one)" marker-end="url(#many)"/>
+  <text x="455" y="292" class="rlab">1 : N  (recipe, cascade all)</text>
+
+  <!-- Ingredient 1 to N RecipeItem -->
+  <path class="rel" d="M280,240 L305,240 L305,435 L330,435" marker-start="url(#one)" marker-end="url(#many)"/>
+  <text x="150" y="330" class="rlab">1 : N  (used in recipes, EAGER)</text>
+
+  <!-- Ingredient 1 to N StockMovement -->
+  <path class="rel" d="M160,264 L160,360" marker-start="url(#one)" marker-end="url(#many)"/>
+  <text x="168" y="320" class="rlab">1 : N  (movements)</text>
+
+  <text x="40" y="600" class="note">Invariant: an ingredient's currentStock always equals the signed sum of its StockMovement ledger rows.</text>
+  <text x="40" y="620" class="note">Concurrency: Ingredient.@Version blocks two simultaneous sales of the last portion (optimistic lock → 409).</text>
+</svg>

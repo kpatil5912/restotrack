@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="720" viewBox="0 0 900 720" font-family="Segoe UI, Arial, sans-serif">
+  <defs>
+    <marker id="fa" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#475569"/>
+    </marker>
+    <style>
+      .title { font-size: 22px; font-weight: 700; fill: #0f172a; }
+      .step  { font-size: 13px; fill: #1e293b; }
+      .lbl   { font-size: 12px; fill: #475569; }
+      .edge  { stroke: #475569; stroke-width: 1.6; fill: none; marker-end: url(#fa); }
+      .yes   { fill: #16a34a; font-size: 12px; font-weight: 700; }
+      .no    { fill: #dc2626; font-size: 12px; font-weight: 700; }
+    </style>
+  </defs>
+  <rect width="900" height="720" fill="#f8fafc"/>
+  <text x="30" y="42" class="title">Flow — POST /api/menu-items/sell  (deplete stock atomically)</text>
+
+  <!-- 1 request -->
+  <rect x="330" y="70" width="240" height="46" rx="8" fill="#e0f2fe" stroke="#0284c7"/>
+  <text x="450" y="98" text-anchor="middle" class="step">Client → { menuItemId, quantity }</text>
+  <line x1="450" y1="116" x2="450" y2="146" class="edge"/>
+
+  <!-- 2 controller validate -->
+  <rect x="320" y="146" width="260" height="46" rx="8" fill="#dbeafe" stroke="#3b82f6"/>
+  <text x="450" y="168" text-anchor="middle" class="step">MenuController.sell (@Valid)</text>
+  <text x="450" y="185" text-anchor="middle" class="lbl">400 if body invalid</text>
+  <line x1="450" y1="192" x2="450" y2="222" class="edge"/>
+
+  <!-- 3 load menu item -->
+  <rect x="320" y="222" width="260" height="52" rx="8" fill="#d1fae5" stroke="#10b981"/>
+  <text x="450" y="244" text-anchor="middle" class="step">MenuService.sell (@Transactional)</text>
+  <text x="450" y="262" text-anchor="middle" class="lbl">load MenuItem + recipe · 404 if missing</text>
+  <line x1="450" y1="274" x2="450" y2="304" class="edge"/>
+
+  <!-- 4 loop convert & check -->
+  <rect x="300" y="304" width="300" height="70" rx="8" fill="#d1fae5" stroke="#10b981"/>
+  <text x="450" y="326" text-anchor="middle" class="step">For each recipe line:</text>
+  <text x="450" y="344" text-anchor="middle" class="lbl">UnitConverter → stock unit; required = perDish × qty</text>
+  <text x="450" y="361" text-anchor="middle" class="lbl">check currentStock ≥ required</text>
+
+  <!-- decision -->
+  <polygon points="450,392 560,442 450,492 340,442" fill="#fef3c7" stroke="#f59e0b"/>
+  <text x="450" y="438" text-anchor="middle" class="step">All ingredients</text>
+  <text x="450" y="456" text-anchor="middle" class="step">sufficient?</text>
+  <line x1="450" y1="374" x2="450" y2="392" class="edge"/>
+
+  <!-- NO branch -->
+  <line x1="560" y1="442" x2="700" y2="442" class="edge"/>
+  <text x="575" y="434" class="no">NO</text>
+  <rect x="700" y="416" width="170" height="52" rx="8" fill="#fee2e2" stroke="#dc2626"/>
+  <text x="785" y="440" text-anchor="middle" class="step">throw BusinessRule</text>
+  <text x="785" y="457" text-anchor="middle" class="lbl">→ 409 · nothing deducted</text>
+
+  <!-- YES branch -->
+  <line x1="450" y1="492" x2="450" y2="522" class="edge"/>
+  <text x="462" y="512" class="yes">YES</text>
+
+  <!-- apply deductions -->
+  <rect x="300" y="522" width="300" height="70" rx="8" fill="#d1fae5" stroke="#10b981"/>
+  <text x="450" y="544" text-anchor="middle" class="step">Apply after all checks pass:</text>
+  <text x="450" y="562" text-anchor="middle" class="lbl">ingredient.currentStock −= required</text>
+  <text x="450" y="579" text-anchor="middle" class="lbl">append StockMovement(CONSUME) per line</text>
+  <line x1="450" y1="592" x2="450" y2="622" class="edge"/>
+
+  <!-- commit -->
+  <rect x="300" y="622" width="300" height="60" rx="8" fill="#ede9fe" stroke="#7c3aed"/>
+  <text x="450" y="646" text-anchor="middle" class="step">Commit tx → 204 No Content</text>
+  <text x="450" y="666" text-anchor="middle" class="lbl">@Version guards concurrent last-portion sale (409 on conflict)</text>
+</svg>

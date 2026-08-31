@@ -1,0 +1,42 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.5.16'
+    id 'io.spring.dependency-management' version '1.1.6'
+}
+
+group = 'com.restotrack'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(25)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    runtimeOnly 'org.postgresql:postgresql'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+// Forward -D system properties from the Gradle invocation to the bootRun app,
+// so DB settings can be overridden at runtime, e.g.:
+//   ./gradlew bootRun -DDB_PORT=5434
+// Also pin the JVM timezone to a value PostgreSQL accepts: the pgjdbc driver
+// forwards the JVM default timezone as a startup parameter, and legacy aliases
+// such as "Asia/Calcutta" are rejected by modern PostgreSQL.
+tasks.named('bootRun') {
+    systemProperties = System.properties
+    systemProperty 'user.timezone', 'UTC'
+}

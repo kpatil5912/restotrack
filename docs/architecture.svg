@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="860" height="620" viewBox="0 0 860 620" font-family="Segoe UI, Arial, sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#475569"/>
+    </marker>
+    <style>
+      .title { font-size: 22px; font-weight: 700; fill: #0f172a; }
+      .layer { font-size: 15px; font-weight: 700; fill: #0f172a; }
+      .box   { font-size: 13px; fill: #1e293b; }
+      .note  { font-size: 12px; fill: #64748b; }
+      .edge  { stroke: #475569; stroke-width: 1.6; fill: none; marker-end: url(#arrow); }
+    </style>
+  </defs>
+
+  <rect width="860" height="620" fill="#f8fafc"/>
+  <text x="30" y="42" class="title">RestoTrack — Architecture (Layered Spring Boot)</text>
+
+  <!-- Client -->
+  <rect x="320" y="64" width="220" height="46" rx="8" fill="#e0f2fe" stroke="#0284c7"/>
+  <text x="430" y="92" text-anchor="middle" class="box">HTTP Client (curl / Postman)</text>
+  <line x1="430" y1="110" x2="430" y2="140" class="edge"/>
+
+  <!-- Web / Controller layer -->
+  <rect x="40" y="140" width="780" height="96" rx="10" fill="#eff6ff" stroke="#3b82f6"/>
+  <text x="56" y="162" class="layer">controller</text>
+  <text x="56" y="180" class="note">REST endpoints under /api — validation (@Valid), maps to/from DTOs</text>
+  <rect x="60" y="188" width="160" height="36" rx="6" fill="#dbeafe" stroke="#3b82f6"/>
+  <text x="140" y="211" text-anchor="middle" class="box">IngredientController</text>
+  <rect x="235" y="188" width="150" height="36" rx="6" fill="#dbeafe" stroke="#3b82f6"/>
+  <text x="310" y="211" text-anchor="middle" class="box">MenuController</text>
+  <rect x="400" y="188" width="150" height="36" rx="6" fill="#dbeafe" stroke="#3b82f6"/>
+  <text x="475" y="211" text-anchor="middle" class="box">WastageController</text>
+  <rect x="565" y="188" width="150" height="36" rx="6" fill="#dbeafe" stroke="#3b82f6"/>
+  <text x="640" y="211" text-anchor="middle" class="box">ReportController</text>
+
+  <line x1="430" y1="236" x2="430" y2="266" class="edge"/>
+
+  <!-- Service layer -->
+  <rect x="40" y="266" width="780" height="96" rx="10" fill="#ecfdf5" stroke="#10b981"/>
+  <text x="56" y="288" class="layer">service</text>
+  <text x="56" y="306" class="note">Business rules, @Transactional, unit conversion, stock ledger logic</text>
+  <rect x="60" y="314" width="150" height="36" rx="6" fill="#d1fae5" stroke="#10b981"/>
+  <text x="135" y="337" text-anchor="middle" class="box">IngredientService</text>
+  <rect x="225" y="314" width="130" height="36" rx="6" fill="#d1fae5" stroke="#10b981"/>
+  <text x="290" y="337" text-anchor="middle" class="box">MenuService</text>
+  <rect x="370" y="314" width="130" height="36" rx="6" fill="#d1fae5" stroke="#10b981"/>
+  <text x="435" y="337" text-anchor="middle" class="box">WastageService</text>
+  <rect x="515" y="314" width="120" height="36" rx="6" fill="#d1fae5" stroke="#10b981"/>
+  <text x="575" y="337" text-anchor="middle" class="box">ReportService</text>
+  <rect x="650" y="314" width="120" height="36" rx="6" fill="#a7f3d0" stroke="#10b981"/>
+  <text x="710" y="337" text-anchor="middle" class="box">UnitConverter</text>
+
+  <line x1="430" y1="362" x2="430" y2="392" class="edge"/>
+
+  <!-- Repository layer -->
+  <rect x="40" y="392" width="780" height="96" rx="10" fill="#fef3c7" stroke="#f59e0b"/>
+  <text x="56" y="414" class="layer">repository (Spring Data JPA)</text>
+  <text x="56" y="432" class="note">JpaRepository interfaces + JOIN FETCH queries</text>
+  <rect x="60" y="440" width="200" height="36" rx="6" fill="#fde68a" stroke="#f59e0b"/>
+  <text x="160" y="463" text-anchor="middle" class="box">IngredientRepository</text>
+  <rect x="275" y="440" width="200" height="36" rx="6" fill="#fde68a" stroke="#f59e0b"/>
+  <text x="375" y="463" text-anchor="middle" class="box">MenuItemRepository</text>
+  <rect x="490" y="440" width="230" height="36" rx="6" fill="#fde68a" stroke="#f59e0b"/>
+  <text x="605" y="463" text-anchor="middle" class="box">StockMovementRepository</text>
+
+  <line x1="430" y1="488" x2="430" y2="518" class="edge"/>
+
+  <!-- Database -->
+  <rect x="300" y="518" width="260" height="60" rx="10" fill="#ede9fe" stroke="#7c3aed"/>
+  <text x="430" y="544" text-anchor="middle" class="box" font-weight="700">PostgreSQL 16</text>
+  <text x="430" y="564" text-anchor="middle" class="note">db: restotrack · port 5434 (default)</text>
+
+  <!-- side note: entity/dto cross-cutting -->
+  <rect x="620" y="64" width="200" height="46" rx="8" fill="#f1f5f9" stroke="#94a3b8"/>
+  <text x="720" y="86" text-anchor="middle" class="box" font-weight="700">entity + dto</text>
+  <text x="720" y="102" text-anchor="middle" class="note">shared model / transport</text>
+</svg>
